@@ -2,9 +2,9 @@ import json
 import os
 
 # Caminho dos arquivos JSON
-TASKS_FILE = 'tasks.json'
-ID_REGISTER = 'register_id.json'
-OLD_TASKS = 'old_tasks.json'
+TASKS_FILE = 'app/data/tasks.json'
+ID_REGISTER = 'app/data/register_id.json'
+OLD_TASKS = 'app/data/old_tasks.json'
 
 # Carregar tarefas do arquivo JSON
 def load_tasks(filename=TASKS_FILE):
@@ -23,9 +23,9 @@ def load_register_id(file_id=ID_REGISTER):
     if os.path.exists(file_id):
         try:
             with open(file_id, 'r') as file:
-                data = json.load(file)
-                if isinstance(data, dict) and 'max_id' in data:
-                    return data['max_id']
+                arq = json.load(file)
+                if isinstance(arq, dict) and 'max_id' in arq:
+                    return arq['max_id']
         except json.JSONDecodeError:
             pass
     return 1  # Se o arquivo não existir ou estiver corrompido, começa em 1
