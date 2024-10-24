@@ -28,3 +28,72 @@ body {
 .btn-danger:hover {
     background-color: #c82333;
 }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;  /* Remove a margem padrão do body */
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 30px;  /* Aumenta o padding para dar mais espaço */
+    border-radius: 12px;  /* Arredonda mais os cantos */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);  /* Aumenta a sombra para um efeito mais profundo */
+    max-width: 400px;
+    width: 100%;
+    text-align: center;  /* Centraliza o texto no container */
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;  /* Adiciona espaço abaixo do título */
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 14px;
+    color: #555;  /* Altera a cor para um cinza mais suave */
+}
+
+input[type="text"], input[type="password"] {
+    width: calc(100% - 20px);  /* Ajusta a largura para incluir padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.3s;  /* Transição suave na mudança da borda */
+}
+
+input:focus {
+    border-color: #007bff;  /* Muda a cor da borda ao focar */
+    outline: none;  /* Remove o contorno padrão */
+}
+
+button {
+    width: 100%;
+    padding: 12px;  /* Aumenta o padding do botão */
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;  /* Transição suave para a cor de fundo */
+}
+
+button:hover {
+    background-color: #0056b3;  /* Cor do botão ao passar o mouse */
+}
+
+button:focus {
+    outline: none;  /* Remove o contorno padrão ao focar no botão */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  /* Adiciona um efeito de sombra ao focar */
+}
+
