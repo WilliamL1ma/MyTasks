@@ -29,7 +29,7 @@ button.btn-outline-danger {
 }
 
 button.btn-outline-danger:hover {
-    background-color: #dc3545;
+    background-color: red;
     color: white;
 }
 
@@ -51,7 +51,6 @@ input[type="text"], input[type="password"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-bottom: 15px;
     font-size: 14px;
     transition: border-color 0.3s;
 }
@@ -98,5 +97,31 @@ button:focus {
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color:red;
+}
+
+.alert_teste {
+    width: calc(100% - 20px);
+    border: none;
+    border-radius: 4px;
+    color: red;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 5px 0 0 0;
+}
+
+.button-login {
+    margin-top: 20px;
+}
+
+input.form-control-task{
+    width: 100%;
+}
+
+.button-add{
+    margin: 20px 0 0 0;
+}
+
+.button_register{
+    margin: 20px 0 0 0;
 }
