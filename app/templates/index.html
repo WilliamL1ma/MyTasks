@@ -11,7 +11,6 @@
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center">
-            <!-- Exibe o nome do usuário logado -->
             <h2>Bem-vindo, {{ session['username'] }}!</h2>
             <form action="/logout" method="post">
                 <button class="btn btn-outline-danger">Logout</button>
@@ -30,7 +29,7 @@
                     {% for task in tasks %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ task.title }}
-                        <form action="/remove_task/{{ task.id }}" method="post" class="ms-2">
+                        <form action="/remove_task/{{ task.id_task }}" method="post" class="ms-2">
                             <button class="btn btn-danger btn-sm">Remover</button>
                         </form>
                     </li>

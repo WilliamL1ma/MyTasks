@@ -14,14 +14,16 @@ def login():
 @app.route('/mytasks', methods=['GET'])
 @login_required
 def index():
-    tasks = view_tasks()
+    user_id = session.get('user_id')  # Pega o ID do usuário logado
+    tasks = view_tasks(user_id)
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add_task', methods=['POST'])
 @login_required
 def add_task_route():
     title = request.form['title']
-    add_task(title)
+    user_id = session.get('user_id')  # Pega o ID do usuário logado
+    add_task(title, user_id)
     return redirect('/mytasks')
 
 @app.route('/remove_task/<int:task_id>', methods=['POST'])
@@ -53,6 +55,7 @@ def login_user_route():
 
         if user:
             session['username'] = username  # Define o username na sessão
+            session['user_id'] = user['id_user']  # Define o id_user na sessão
             print(session)  # Exibe a sessão no terminal para debug
             return redirect('/mytasks')  # Redireciona para a página de tarefas
         else:
@@ -63,4 +66,5 @@ def login_user_route():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('username', None)  # Remove o usuário da sessão
+    session.pop('user_id', None)  # Remove o ID do usuário da sessão
     return redirect(url_for('login'))  # Redireciona para a página de login

@@ -1,25 +1,27 @@
 import json
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+from pathlib import Path
 
 # Caminho dos arquivos JSON
-TASKS_FILE = 'app/data/tasks.json'
-ID_REGISTER = 'app/data/register_id.json'
-OLD_TASKS = 'app/data/old_tasks.json'
+TASKS_FILE = Path(__file__).parent / 'data' / 'tasks.json'
+ID_REGISTER = Path(__file__).parent / 'data' / 'register_id.json'
+OLD_TASKS = Path(__file__).parent / 'data' / 'old_tasks.json'
 
-# Carregar tarefas do arquivo JSON
+def ensure_tasks_file_exists():
+    """Cria o arquivo tasks.json se ele não existir e inicializa com uma lista vazia."""
+    if not TASKS_FILE.exists():
+        with open(TASKS_FILE, 'w') as file:
+            json.dump([], file)
+
 def load_tasks(filename=TASKS_FILE):
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            return json.load(file)
-    return []  # Retorna lista vazia se o arquivo não existir
+    ensure_tasks_file_exists()  # Garantir que o arquivo exista
+    with open(filename, 'r') as file:
+        return json.load(file)
 
-# Salvar tarefas no arquivo JSON
 def save_tasks(tasks, filename=TASKS_FILE):
     with open(filename, 'w') as file:
         json.dump(tasks, file, indent=4)
 
-# Carregar o próximo ID único do arquivo JSON
 def load_register_id(file_id=ID_REGISTER):
     if os.path.exists(file_id):
         try:
@@ -31,34 +33,22 @@ def load_register_id(file_id=ID_REGISTER):
             pass
     return 1  # Se o arquivo não existir ou estiver corrompido, começa em 1
 
-# Salvar o próximo ID único no arquivo JSON
 def save_register_id(new_id, file_id=ID_REGISTER):
     with open(file_id, 'w') as file:
         json.dump({"max_id": new_id}, file, indent=4)
 
-# Carregar tarefas removidas do arquivo JSON
-def load_old_tasks(filename=OLD_TASKS):
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            return json.load(file)
-    return []  # Retorna lista vazia se o arquivo não existir
-
-# Salvar tarefas removidas no arquivo JSON
-def save_old_tasks(old_tasks, filename=OLD_TASKS):
-    with open(filename, 'w') as file:
-        json.dump(old_tasks, file, indent=4)
-
-# Adicionar nova tarefa
-def add_task(title):
+def add_task(title, user_id):
+    ensure_tasks_file_exists()  # Garantir que o arquivo exista
     tasks = load_tasks()
 
     # Carrega o próximo ID único
     id_max = load_register_id()
 
     new_task = {
-        "id": id_max,  # Usa o próximo ID único
+        "id_task": id_max,  # ID da tarefa
         "title": title,
-        "completed": False
+        "completed": False,
+        "user_id": user_id  # ID do usuário que criou a tarefa
     }
     tasks.append(new_task)
 
@@ -68,23 +58,36 @@ def add_task(title):
     save_tasks(tasks)
     return new_task
 
-# Ver tarefas
-def view_tasks():
-    return load_tasks()
+def view_tasks(user_id):
+    tasks = load_tasks()
+    return [task for task in tasks if task.get("user_id") == user_id]  # Usa get para evitar KeyError
 
-# Remover tarefa e salvar no arquivo de removidas
 def remove_task(task_id):
     tasks = load_tasks()
     old_tasks = load_old_tasks()
 
     # Filtra e encontra a tarefa a ser removida
-    task_to_remove = [task for task in tasks if task["id"] == task_id]
+    task_to_remove = None  # Variável para armazenar a tarefa a ser removida
+    for task in tasks:
+        if task.get("id_task") == task_id:
+            task_to_remove = task
+            break  # Sai do loop assim que a tarefa é encontrada
 
     if task_to_remove:
         # Adiciona a tarefa removida ao arquivo de tarefas antigas
-        old_tasks.extend(task_to_remove)
+        old_tasks.append(task_to_remove)
         save_old_tasks(old_tasks)
 
         # Remove a tarefa da lista original
-        tasks = [task for task in tasks if task["id"] != task_id]
+        tasks = [task for task in tasks if task.get("id_task") != task_id]
         save_tasks(tasks)
+
+def load_old_tasks(filename=OLD_TASKS):
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            return json.load(file)
+    return []  # Retorna lista vazia se o arquivo não existir
+
+def save_old_tasks(old_tasks, filename=OLD_TASKS):
+    with open(filename, 'w') as file:
+        json.dump(old_tasks, file, indent=4)

@@ -15,7 +15,7 @@ def get_next_id(users):
     if not users:  # Se não houver usuários, o próximo ID é 1
         return 1
     else:
-        return max(user.get('id', 0) for user in users) + 1  # Usa get para evitar KeyError
+        return max(user.get('id_user', 0) for user in users) + 1  # Usando 'id_user'
 
 def register_user(username, password):
     ensure_users_file_exists()  # Garantir que o arquivo exista
@@ -25,21 +25,21 @@ def register_user(username, password):
 
     # Verifica se o usuário já existe
     for user in users:
-        if user['title'] == username:  # Mudando 'username' para 'title'
+        if user['title'] == username:
             return 'Usuário já existe'
         
     password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     new_user = {
-        'id': get_next_id(users),  # Obtém o próximo ID disponível
-        'title': username,  # Usando 'title' no lugar de 'username'
-        'password': password_hash.decode('utf-8')  # Você ainda pode querer manter a senha
+        'id_user': get_next_id(users),  # Obtém o próximo ID disponível
+        'title': username,
+        'password': password_hash.decode('utf-8')
     }
     users.append(new_user)
 
     # Atualiza o arquivo com a nova lista de usuários
     with open(CAMINHO_USER, 'w') as file:
-        json.dump(users, file, indent=4)  # Formata o JSON com indentação
+        json.dump(users, file, indent=4)
 
     return 'Usuário cadastrado com sucesso!'
 
