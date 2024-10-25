@@ -11,13 +11,15 @@
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center">
-            <h1>My Tasks</h1>
+            <!-- Exibe o nome do usuário logado -->
+            <h2>Bem-vindo, {{ session['username'] }}!</h2>
             <form action="/logout" method="post">
                 <button class="btn btn-outline-danger">Logout</button>
             </form>
         </div>
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mt-3">
             <div class="card-body">
+                <h1 class="text-center mb-4">My Tasks</h1>
                 <form action="/add_task" method="post" class="mb-4">
                     <div class="input-group">
                         <input type="text" class="form-control" name="title" placeholder="Nova tarefa" required>
