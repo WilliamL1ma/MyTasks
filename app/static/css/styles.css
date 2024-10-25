@@ -1,17 +1,89 @@
+/* Estilos gerais */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.container {
+/* Estilo para container das páginas */
+.container, .form-container {
     max-width: 600px;
-    margin-top: 50px;
+    width: 100%;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 30px;
 }
 
+/* Botão logout */
+button.btn-outline-danger {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+button.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Estilo para login e registro */
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+input[type="text"], input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Botão de login/registro */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Estilo para lista de tarefas */
 .list-group-item {
     transition: background-color 0.3s;
 }
@@ -28,72 +100,3 @@ body {
 .btn-danger:hover {
     background-color: #c82333;
 }
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;  /* Remove a margem padrão do body */
-}
-
-.form-container {
-    background-color: #ffffff;
-    padding: 30px;  /* Aumenta o padding para dar mais espaço */
-    border-radius: 12px;  /* Arredonda mais os cantos */
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);  /* Aumenta a sombra para um efeito mais profundo */
-    max-width: 400px;
-    width: 100%;
-    text-align: center;  /* Centraliza o texto no container */
-}
-
-h2 {
-    color: #333;
-    margin-bottom: 20px;  /* Adiciona espaço abaixo do título */
-}
-
-label {
-    display: block;
-    margin: 10px 0 5px;
-    font-size: 14px;
-    color: #555;  /* Altera a cor para um cinza mais suave */
-}
-
-input[type="text"], input[type="password"] {
-    width: calc(100% - 20px);  /* Ajusta a largura para incluir padding */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    transition: border-color 0.3s;  /* Transição suave na mudança da borda */
-}
-
-input:focus {
-    border-color: #007bff;  /* Muda a cor da borda ao focar */
-    outline: none;  /* Remove o contorno padrão */
-}
-
-button {
-    width: 100%;
-    padding: 12px;  /* Aumenta o padding do botão */
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;  /* Transição suave para a cor de fundo */
-}
-
-button:hover {
-    background-color: #0056b3;  /* Cor do botão ao passar o mouse */
-}
-
-button:focus {
-    outline: none;  /* Remove o contorno padrão ao focar no botão */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  /* Adiciona um efeito de sombra ao focar */
-}
-

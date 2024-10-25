@@ -1,24 +1,31 @@
-from flask import render_template, request, redirect, flash
+from flask import render_template, request, redirect, flash, session, url_for
 from app import app
 from app.tasks_manager import add_task, view_tasks, remove_task
 from app.auth import register_user, login_user
+from app.decorators import login_required
+
+# Configuração da chave secreta para as sessões
+app.secret_key = 'bomdia'
 
 @app.route('/')
 def login():
     return render_template('login.html')  # Retorna a página de login
 
 @app.route('/mytasks', methods=['GET'])
+@login_required
 def index():
     tasks = view_tasks()
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add_task', methods=['POST'])
+@login_required
 def add_task_route():
     title = request.form['title']
     add_task(title)
     return redirect('/mytasks')
 
 @app.route('/remove_task/<int:task_id>', methods=['POST'])
+@login_required
 def remove_task_route(task_id):
     remove_task(task_id)
     return redirect('/mytasks')
@@ -45,8 +52,15 @@ def login_user_route():
         user = login_user(username, password)
 
         if user:
+            session['username'] = username  # Define o username na sessão
+            print(session)  # Exibe a sessão no terminal para debug
             return redirect('/mytasks')  # Redireciona para a página de tarefas
         else:
             flash('Nome de usuário ou senha incorretos.')
 
-    return render_template('login.html')
+    return render_template('login.html')  # Corrigido para retornar a página de login
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('username', None)  # Remove o usuário da sessão
+    return redirect(url_for('login'))  # Redireciona para a página de login
