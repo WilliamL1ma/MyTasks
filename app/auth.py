@@ -20,6 +20,7 @@ def get_next_id(users):
 def register_user(username, password):
     ensure_users_file_exists()  # Garantir que o arquivo exista
 
+
     with open(CAMINHO_USER, 'r') as file:
         users = json.load(file)
 

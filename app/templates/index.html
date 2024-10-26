@@ -11,7 +11,7 @@
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Bem-vindo, {{ session['username'] }}!</h2>
+            <h2>Bem-vindo, {{ session['username'] | title }}!</h2>
             <form action="/logout" method="post">
                 <button class="btn btn-outline-danger">Logout</button>
             </form>
@@ -24,6 +24,36 @@
                         <input type="text" class="form-control-task" name="title" placeholder="Nova tarefa" required>
                         <button class="btn btn-primary button-add" type="submit">Adicionar</button>
                     </div>
+                    <!-- Botão para abrir a modal -->
+                    <button type="button" class="tarefas_antigas" data-bs-toggle="modal" data-bs-target="#oldTasksModal">
+                        Ver Tarefas Antigas
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="oldTasksModal" tabindex="-1" aria-labelledby="oldTasksModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="oldTasksModalLabel">Tarefas Antigas</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="list-group" id="old-tasks-container">
+                                        {% for task in old_tasks %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ task.title }}
+                                                <span class="timer" data-created-at="{{ task.created_at }}"></span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
                 <ul class="list-group">
                     {% for task in tasks %}
@@ -44,5 +74,32 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Função para calcular o tempo restante
+        function calculateTimeRemaining(createdAt) {
+            const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
+            const elapsedTime = currentTime - createdAt; // Tempo decorrido
+            const remainingTime = 100 - elapsedTime; // 24 horas em segundos
+            return remainingTime > 0 ? remainingTime : 0; // Retorna 0 se o tempo já tiver passado
+        }
+
+        function updateTimers() {
+            const timers = document.querySelectorAll('.timer');
+            timers.forEach(timer => {
+                const createdAt = parseInt(timer.getAttribute('data-created-at'));
+                const remainingTime = calculateTimeRemaining(createdAt);
+
+                const hours = Math.floor(remainingTime / 3600);
+                const minutes = Math.floor((remainingTime % 3600) / 60);
+                const seconds = remainingTime % 60;
+
+                timer.textContent = `${hours}h ${minutes}m ${seconds}s`;
+            });
+        }
+
+        // Atualiza os temporizadores a cada segundo
+        setInterval(updateTimers, 1000);
+        updateTimers(); // Chama imediatamente para não esperar um segundo para a primeira atualização
+    </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from pathlib import Path
 
 # Caminho dos arquivos JSON
@@ -48,7 +49,8 @@ def add_task(title, user_id):
         "id_task": id_max,  # ID da tarefa
         "title": title,
         "completed": False,
-        "user_id": user_id  # ID do usuário que criou a tarefa
+        "user_id": user_id,  # ID do usuário que criou a tarefa
+        "created_at": time.time()
     }
     tasks.append(new_task)
 
@@ -91,3 +93,15 @@ def load_old_tasks(filename=OLD_TASKS):
 def save_old_tasks(old_tasks, filename=OLD_TASKS):
     with open(filename, 'w') as file:
         json.dump(old_tasks, file, indent=4)
+
+def view_old_tasks(user_id):
+    old_tasks = load_old_tasks()
+    current_time = time.time()
+    one_day = 86400
+
+    # Filtra tarefas antigas por usuário e pelo tempo de criação
+    return [
+        task for task in old_tasks 
+        if task.get("user_id") == user_id and (current_time - task.get('created_at', 0)) <= one_day
+    ]
+

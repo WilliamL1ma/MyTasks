@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, flash, session, url_for
 from app import app
-from app.tasks_manager import add_task, view_tasks, remove_task
+from app.tasks_manager import add_task, view_tasks, remove_task, view_old_tasks
 from app.auth import register_user, login_user
 from app.decorators import login_required
 
@@ -16,7 +16,8 @@ def login():
 def index():
     user_id = session.get('user_id')  # Pega o ID do usuário logado
     tasks = view_tasks(user_id)
-    return render_template('index.html', tasks=tasks)
+    old_tasks = view_old_tasks(user_id)
+    return render_template('index.html', tasks=tasks, old_tasks=old_tasks)
 
 @app.route('/add_task', methods=['POST'])
 @login_required

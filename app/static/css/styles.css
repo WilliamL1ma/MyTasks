@@ -125,3 +125,13 @@ input.form-control-task{
 .button_register{
     margin: 20px 0 0 0;
 }
+
+.tarefas_antigas {
+    background-color: grey;
+    margin: 20px 0 0 0;
+}
+
+.tarefas_antigas:hover {
+    background-color: rgb(44, 44, 44);
+    margin: 20px 0 0 0;
+}
