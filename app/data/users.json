@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "id_user": 1,
+        "title": "william",
+        "password": "$2b$12$3IrNKipzujPzJ0puBpHcLOh2Os1LHQo.i6MVeS1vw83KqPpvu2GgO"
+    },
+    {
+        "id_user": 2,
+        "title": "tiago",
+        "password": "$2b$12$OxISGTQmnODTbulqiRv5f.x4XyCuwfdy13NvAu8pTwc9hNkAaAGR2"
+    }
+]

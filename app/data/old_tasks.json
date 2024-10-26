@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "id_task": 1,
+        "title": "123",
+        "completed": false,
+        "user_id": 1,
+        "created_at": 1729949978.9025974
+    },
+    {
+        "id_task": 2,
+        "title": "arroz",
+        "completed": false,
+        "user_id": 2,
+        "created_at": 1729950010.9080229
+    }
+]

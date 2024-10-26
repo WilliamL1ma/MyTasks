@@ -42,7 +42,7 @@
                                         {% for task in old_tasks %}
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 {{ task.title }}
-                                                <span class="timer" data-created-at="{{ task.created_at }}"></span>
+                                                <span class="timer" data-created-at="{{ task.created_at }}"></span> <!-- O contador agora está aqui -->
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -53,12 +53,12 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
-                <ul class="list-group">
+                <ul class="list-group" id="tasks-container">
                     {% for task in tasks %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <li class="list-group-item d-flex justify-content-between align-items-center" data-created-at="{{ task.created_at }}" data-task-id="{{ task.id_task }}">
                         {{ task.title }}
+                        <!-- O contador foi removido das tarefas ativas -->
                         <form action="/remove_task/{{ task.id_task }}" method="post" class="ms-2">
                             <button class="btn btn-danger btn-sm">Remover</button>
                         </form>
@@ -79,21 +79,33 @@
         function calculateTimeRemaining(createdAt) {
             const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
             const elapsedTime = currentTime - createdAt; // Tempo decorrido
-            const remainingTime = 100 - elapsedTime; // 24 horas em segundos
+            const remainingTime =  86400 - elapsedTime; // 24 horas
             return remainingTime > 0 ? remainingTime : 0; // Retorna 0 se o tempo já tiver passado
         }
 
         function updateTimers() {
-            const timers = document.querySelectorAll('.timer');
-            timers.forEach(timer => {
-                const createdAt = parseInt(timer.getAttribute('data-created-at'));
+            const oldTasks = document.querySelectorAll('#old-tasks-container li');
+            oldTasks.forEach(task => {
+                const createdAt = parseInt(task.querySelector('.timer').getAttribute('data-created-at'));
                 const remainingTime = calculateTimeRemaining(createdAt);
 
                 const hours = Math.floor(remainingTime / 3600);
                 const minutes = Math.floor((remainingTime % 3600) / 60);
                 const seconds = remainingTime % 60;
 
-                timer.textContent = `${hours}h ${minutes}m ${seconds}s`;
+                // Atualiza o timer
+                const timerText = `${hours}h ${minutes}m ${seconds}s`;
+                const timerSpan = task.querySelector('.timer');
+                if (timerSpan) {
+                    timerSpan.textContent = timerText;
+                }
+
+                // Remove a tarefa se o tempo já tiver passado
+                if (remainingTime <= 0) {
+                    task.remove(); // Remove a tarefa da lista
+                    const taskId = task.getAttribute('data-task-id');
+                    fetch(`/remove_task/${taskId}`, { method: 'POST' }); // Remove a tarefa do backend
+                }
             });
         }
 

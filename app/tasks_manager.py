@@ -14,6 +14,12 @@ def ensure_tasks_file_exists():
         with open(TASKS_FILE, 'w') as file:
             json.dump([], file)
 
+def ensure_old_tasks_file_exists():
+    """Cria o arquivo old_tasks.json se ele não existir e inicializa com uma lista vazia."""
+    if not OLD_TASKS.exists():
+        with open(OLD_TASKS, 'w') as file:
+            json.dump([], file)
+
 def load_tasks(filename=TASKS_FILE):
     ensure_tasks_file_exists()  # Garantir que o arquivo exista
     with open(filename, 'r') as file:
@@ -85,6 +91,7 @@ def remove_task(task_id):
         save_tasks(tasks)
 
 def load_old_tasks(filename=OLD_TASKS):
+    ensure_old_tasks_file_exists()  # Garantir que o arquivo exista
     if os.path.exists(filename):
         with open(filename, 'r') as file:
             return json.load(file)
@@ -97,11 +104,11 @@ def save_old_tasks(old_tasks, filename=OLD_TASKS):
 def view_old_tasks(user_id):
     old_tasks = load_old_tasks()
     current_time = time.time()
-    one_day = 86400
 
     # Filtra tarefas antigas por usuário e pelo tempo de criação
     return [
         task for task in old_tasks 
-        if task.get("user_id") == user_id and (current_time - task.get('created_at', 0)) <= one_day
+        if task.get("user_id") == user_id and (current_time - task.get('created_at', 0)) 
     ]
+
 
