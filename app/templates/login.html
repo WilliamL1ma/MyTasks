@@ -19,7 +19,7 @@
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
+                        <div class="picareta_{{ category }}">
                             <p class="alert_teste">{{ message }}</p>
                         </div>
                     {% endfor %}
@@ -28,7 +28,12 @@
 
             <button class="button-login" id="logar" type="submit">Logar</button>
         </form>
-        <p>Não tem uma conta? <a href="/register">Registrar</a></p>
+        
+        <!-- Links para registro e recuperação de senha -->
+        <div class="links-container">
+            <p>Não tem uma conta? <a href="/register">Registrar</a></p>
+            <p><a class="forgot-password" href="/reset-password">Esqueci a senha</a></p>
+        </div>
     </div>
 </body>
 </html>

@@ -1,1 +1,9 @@
-[]
+[
+    {
+        "id_user": 1,
+        "title": "william",
+        "password": "$2b$12$pug/1uSbxxC7Ix4RckPQyuXdb6q962w96.gAuOKJKA9N3NS54Lyei",
+        "email": "williamgcrlima@gmail.com",
+        "is_admin": false
+    }
+]

@@ -41,7 +41,8 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        message = register_user(username, password)
+        email = request.form['email']
+        message = register_user(username, password, email)
 
         if message == 'Usuário cadastrado com sucesso!':
             return render_template('login.html')
@@ -59,7 +60,7 @@ def login_user_route():
 
         # Verifica se o usuário já está logado
         if user and username in logged_users:
-            flash('Este usuário já está logado em outro dispositivo.')
+            flash('Este usuário já está logado em outro dispositivo.', category='danger')
             return redirect(url_for('login'))
 
         if user:
@@ -69,7 +70,8 @@ def login_user_route():
             logged_users.append(username)  # Adiciona o usuário à lista de logados
             return redirect('/mytasks')  # Redireciona para a página de tarefas
         else:
-            flash('Nome de usuário ou senha incorretos.')
+            flash('Nome de usuário ou senha incorretos.', category='incorreto')
+            return redirect(url_for('login'))
 
     return render_template('login.html')  # Retorna a página de login
 
@@ -81,6 +83,6 @@ def logout():
     session.pop('username', None)  # Remove o usuário da sessão
     session.pop('user_id', None)  # Remove o ID do usuário da sessão
     session.pop('is_admin', None)  # Remove a informação se o usuário é admin
-    flash('Você saiu com sucesso!')
+    flash('Você saiu com sucesso!', category='success')
     return redirect(url_for('login'))  # Redireciona para a página de login
 

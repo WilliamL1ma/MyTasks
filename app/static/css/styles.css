@@ -20,17 +20,24 @@ body {
     padding: 30px;
 }
 
-/* Botão logout */
-button.btn-outline-danger {
-    padding: 8px 16px;
-    font-size: 14px;
-    color: #dc3545;
-    border-color: #dc3545;
+/* Estilo para mensagens de alerta */
+.alert_teste {
+    width: calc(100% - 20px);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 5px 0 0 0;
 }
 
-button.btn-outline-danger:hover {
-    background-color: red;
-    color: white;
+/* Mensagem de sucesso */
+.picareta_success {
+    color: #155724; /* Verde escuro */
+}
+
+/* Mensagem de usuario já logado */
+.picareta_danger {
+    color: red;
 }
 
 /* Estilo para login e registro */
@@ -46,7 +53,10 @@ label {
     color: #555;
 }
 
-input[type="text"], input[type="password"] {
+/* Estilo para campos de entrada */
+input[type="text"], 
+input[type="password"],
+input[type="email"] { /* Adiciona o campo de e-mail aqui */
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ccc;
@@ -97,32 +107,22 @@ button:focus {
 }
 
 .btn-danger:hover {
-    background-color:red;
-}
-
-.alert_teste {
-    width: calc(100% - 20px);
-    border: none;
-    border-radius: 4px;
-    color: red;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin: 5px 0 0 0;
+    background-color: red;
 }
 
 .button-login {
     margin-top: 20px;
 }
 
-input.form-control-task{
+input.form-control-task {
     width: 100%;
 }
 
-.button-add{
+.button-add {
     margin: 20px 0 0 0;
 }
 
-.button_register{
+.button_register {
     margin: 20px 0 0 0;
 }
 
@@ -133,5 +133,27 @@ input.form-control-task{
 
 .tarefas_antigas:hover {
     background-color: rgb(44, 44, 44);
-    margin: 20px 0 0 0;
+}
+
+/* Estilo para o contêiner dos links */
+.links-container {
+    display: flex; /* Ativa o layout flexível */
+    justify-content: space-between; /* Coloca os links nos lados opostos */
+    margin-top: 10px; /* Reduz o espaço acima dos links */
+    font-size: 14px; /* Tamanho da fonte igual ao dos rótulos */
+}
+
+/* Estilo para o link "Esqueci a senha" */
+.forgot-password {
+    color: #007bff; /* Azul padrão do Bootstrap */
+    text-decoration: underline; /* Sublinha o texto */
+}
+
+.forgot-password:hover {
+    color: #0056b3; /* Azul mais escuro ao passar o mouse */
+    text-decoration: none; /* Remove o sublinhado ao passar o mouse */
+}
+
+.picareta_incorreto {
+    color: red;
 }
