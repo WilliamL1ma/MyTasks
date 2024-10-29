@@ -7,6 +7,9 @@ from app.decorators import login_required
 # Configuração da chave secreta para as sessões
 app.secret_key = 'bomdia'
 
+# Lista para armazenar usuários logados
+logged_users = []
+
 @app.route('/')
 def login():
     return render_template('login.html')  # Retorna a página de login
@@ -54,18 +57,30 @@ def login_user_route():
         password = request.form['password']
         user = login_user(username, password)
 
+        # Verifica se o usuário já está logado
+        if user and username in logged_users:
+            flash('Este usuário já está logado em outro dispositivo.')
+            return redirect(url_for('login'))
+
         if user:
             session['username'] = username  # Define o username na sessão
             session['user_id'] = user['id_user']  # Define o id_user na sessão
-            print(session)  # Exibe a sessão no terminal para debug
+            session['is_admin'] = user.get('is_admin', False)  # Define se o usuário é admin
+            logged_users.append(username)  # Adiciona o usuário à lista de logados
             return redirect('/mytasks')  # Redireciona para a página de tarefas
         else:
             flash('Nome de usuário ou senha incorretos.')
 
-    return render_template('login.html')  # Corrigido para retornar a página de login
+    return render_template('login.html')  # Retorna a página de login
 
 @app.route('/logout', methods=['POST'])
 def logout():
+    username = session.get('username')
+    if username in logged_users:
+        logged_users.remove(username)  # Remove o usuário da lista de logados
     session.pop('username', None)  # Remove o usuário da sessão
     session.pop('user_id', None)  # Remove o ID do usuário da sessão
+    session.pop('is_admin', None)  # Remove a informação se o usuário é admin
+    flash('Você saiu com sucesso!')
     return redirect(url_for('login'))  # Redireciona para a página de login
+

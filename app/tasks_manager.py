@@ -111,4 +111,3 @@ def view_old_tasks(user_id):
         if task.get("user_id") == user_id and (current_time - task.get('created_at', 0)) 
     ]
 
-

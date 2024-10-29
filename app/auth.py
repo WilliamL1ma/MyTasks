@@ -17,9 +17,8 @@ def get_next_id(users):
     else:
         return max(user.get('id_user', 0) for user in users) + 1  # Usando 'id_user'
 
-def register_user(username, password):
+def register_user(username, password, is_admin=False):
     ensure_users_file_exists()  # Garantir que o arquivo exista
-
 
     with open(CAMINHO_USER, 'r') as file:
         users = json.load(file)
@@ -34,7 +33,9 @@ def register_user(username, password):
     new_user = {
         'id_user': get_next_id(users),  # Obtém o próximo ID disponível
         'title': username,
-        'password': password_hash.decode('utf-8')
+        'password': password_hash.decode('utf-8'),
+        'is_admin': is_admin, # Adicionando o campo is_admin
+        'Logged': False  
     }
     users.append(new_user)
 

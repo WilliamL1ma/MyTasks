@@ -21,8 +21,8 @@
                 <h1 class="text-center mb-4">My Tasks</h1>
                 <form action="/add_task" method="post" class="mb-4">
                     <div class="input-group-task">
-                        <input type="text" class="form-control-task" name="title" placeholder="Nova tarefa" required>
-                        <button class="btn btn-primary button-add" type="submit">Adicionar</button>
+                        <input type="text" class="form-control-task" id="nova-tarefa" name="title" placeholder="Nova tarefa" required>
+                        <button class="btn btn-primary button-add" id="adicionar" type="submit">Adicionar</button>
                     </div>
                     <!-- Botão para abrir a modal -->
                     <button type="button" class="tarefas_antigas" data-bs-toggle="modal" data-bs-target="#oldTasksModal">
@@ -79,7 +79,7 @@
         function calculateTimeRemaining(createdAt) {
             const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
             const elapsedTime = currentTime - createdAt; // Tempo decorrido
-            const remainingTime =  86400 - elapsedTime; // 24 horas
+            const remainingTime =  10 - elapsedTime; // 24 horas
             return remainingTime > 0 ? remainingTime : 0; // Retorna 0 se o tempo já tiver passado
         }
 
