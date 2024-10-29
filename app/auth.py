@@ -1,10 +1,6 @@
 import bcrypt
 import json
 from pathlib import Path
-import os
-from dotenv import load_dotenv
-
-load_dotenv()  # Carrega variáveis de ambiente do .env
 
 CAMINHO_USER = Path(__file__).parent / 'data' / 'users.json'
 
@@ -39,7 +35,7 @@ def register_user(username, password, email, is_admin=False):
         'title': username,
         'password': password_hash.decode('utf-8'),
         'email': email,
-        'is_admin': is_admin,  # Adicionando o campo is_admin 
+        'is_admin': is_admin, # Adicionando o campo is_admin 
     }
     users.append(new_user)
 
@@ -64,22 +60,9 @@ def login_user(username, password):
                 return None  # Senha incorreta
     return None  # Usuário não encontrado
 
-def reset_password(email, token, new_password):
-    """Redefine a senha de um usuário com base no e-mail e token fornecidos."""
-    ensure_users_file_exists()  # Garantir que o arquivo exista
+def logout_user():
+    """Função de logout."""
+    return None  # O logout em si é tratado pela remoção da sessão na rota
 
-    with open(CAMINHO_USER, 'r') as file:
-        users = json.load(file)
-
-    # Aqui você deve validar o token (isto é uma implementação simplificada)
-    # Você deve ter uma lógica para associar tokens a usuários
-    # Para este exemplo, vamos assumir que qualquer token é válido.
-    
-    for user in users:
-        if user['email'] == email:  # Verifica se o email corresponde
-            password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-            user['password'] = password_hash.decode('utf-8')  # Atualiza a senha
-            with open(CAMINHO_USER, 'w') as file:
-                json.dump(users, file, indent=4)
-            return True  # Retorna True se a senha for redefinida com sucesso
-    return False  # Retorna False se o e-mail não for encontrado
+if __name__ == '__main__':
+    print(CAMINHO_USER)
