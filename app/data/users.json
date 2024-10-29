@@ -1,14 +1,1 @@
-[
-    {
-        "id_user": 1,
-        "title": "william",
-        "password": "$2b$12$auTOL.NxVj7LSefh6yy00O52OsIjxNzRJ6M4derwUfN.aI8Lxa.se",
-        "is_admin": false
-    },
-    {
-        "id_user": 2,
-        "title": "richard",
-        "password": "$2b$12$J0r4T4cc4MBDBoBW3kRNhebwd3u38fEacNo2waErO9SzjPZ.xIBii",
-        "is_admin": false
-    }
-]
+[]
