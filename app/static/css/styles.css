@@ -157,3 +157,107 @@ input.form-control-task {
 .picareta_incorreto {
     color: red;
 }
+
+/* Estilos gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Estilo para o contêiner */
+.banana {
+    max-width: 600px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* Estilo para mensagens de alerta */
+.uva {
+    width: calc(100% - 20px);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 5px 0 0 0;
+}
+
+/* Mensagem de sucesso */
+.success {
+    color: #155724; /* Verde escuro */
+}
+
+/* Mensagem de erro */
+.error {
+    color: red;
+}
+
+/* Estilo para títulos */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilo para rótulos */
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Estilo para campos de entrada */
+.manga {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.manga:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Botão de envio */
+.morango {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+.morango:hover {
+    background-color: #0056b3;
+}
+
+.morango:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.mongolia {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.mongolia:hover {
+    color: #0056b3;
+    text-decoration: none;
+}

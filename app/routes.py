@@ -3,12 +3,17 @@ from app import app
 from app.tasks_manager import add_task, view_tasks, remove_task, view_old_tasks
 from app.auth import register_user, login_user
 from app.decorators import login_required
+from app.email.reset_password_bot import enviar_email_recuperacao
+from pathlib import Path
+import json
 
 # Configuração da chave secreta para as sessões
 app.secret_key = 'bomdia'
 
 # Lista para armazenar usuários logados
 logged_users = []
+
+CAMINHO_USER = Path(__file__).parent / 'data' / 'users.json'
 
 @app.route('/')
 def login():
@@ -86,3 +91,24 @@ def logout():
     flash('Você saiu com sucesso!', category='success')
     return redirect(url_for('login'))  # Redireciona para a página de login
 
+@app.route('/forgot-password', methods=['POST', 'GET'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+
+        with open(CAMINHO_USER, 'r') as arquivo:
+            users = json.load(arquivo)
+
+            user = next((user for user in users if user['email'] == email), None)
+
+            if user:
+                try:
+                    enviar_email_recuperacao(email, nome=user.get('title', 'Usuário'))
+                    flash('E-mail de recuperação enviado com sucesso!', category='success')
+                except Exception as e:
+                    flash(f'Ocorreu um erro ao enviar o e-mail: {str(e)}', category='danger')
+            else:
+                flash('E-mail não encontrado. Verifique e tente novamente.', category='danger')
+
+            return redirect(url_for('forgot_password'))
+    return render_template('recovery.html')
