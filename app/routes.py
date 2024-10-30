@@ -5,6 +5,7 @@ from app.auth import register_user, login_user
 from app.decorators import login_required
 from app.email.reset_password_bot import enviar_email_recuperacao
 from pathlib import Path
+from time import sleep
 import json
 
 # Configuração da chave secreta para as sessões
@@ -105,6 +106,8 @@ def forgot_password():
                 try:
                     enviar_email_recuperacao(email, nome=user.get('title', 'Usuário'))
                     flash('E-mail de recuperação enviado com sucesso!', category='success')
+                    return redirect(url_for('login'))
+                    
                 except Exception as e:
                     flash(f'Ocorreu um erro ao enviar o e-mail: {str(e)}', category='danger')
             else:
@@ -112,3 +115,8 @@ def forgot_password():
 
             return redirect(url_for('forgot_password'))
     return render_template('recovery.html')
+
+@app.route('/redefinir-senha', methods=['POST', 'GET'])
+def redefinir_senha():
+    return render_template('resetpassword.html')
+

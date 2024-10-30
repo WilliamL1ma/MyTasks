@@ -1,4 +1,4 @@
-# Arquivo: recovery_email.py (por exemplo)
+# Arquivo: recovery_email.py
 
 import os
 import pathlib
@@ -30,16 +30,20 @@ def enviar_email_recuperacao(destinatario, nome='Usuário'):
         raise ValueError("Credenciais de e-mail não foram carregadas corretamente. Verifique o arquivo .env")
     
     # Lê o arquivo HTML e prepara o corpo do e-mail
-    with open(CAMINHO_HTML, 'r') as arquivo:
-        texto_arquivo = arquivo.read()
-        template = Template(texto_arquivo)
-        texto_email = template.substitute(nome=nome)
+    try:
+        with open(CAMINHO_HTML, 'r', encoding='utf-8') as arquivo:
+            texto_arquivo = arquivo.read()
+            template = Template(texto_arquivo)
+            texto_email = template.substitute(nome=nome)
+    except FileNotFoundError:
+        print("Arquivo HTML não encontrado. Verifique o caminho e o nome do arquivo.")
+        return
 
     # Cria a estrutura do e-mail 
     mime_multipart = MIMEMultipart()
-    mime_multipart['from'] = remetente
-    mime_multipart['to'] = destinatario
-    mime_multipart['subject'] = 'Recuperação de Senha'
+    mime_multipart['From'] = remetente
+    mime_multipart['To'] = destinatario
+    mime_multipart['Subject'] = 'Recuperação de Senha'
 
     # Anexa o corpo HTML ao e-mail
     corpo_email = MIMEText(texto_email, 'html', 'utf-8')
