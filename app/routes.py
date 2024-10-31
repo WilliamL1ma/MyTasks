@@ -5,14 +5,11 @@ from app.auth import register_user, login_user
 from app.decorators import login_required
 from app.email.reset_password_bot import enviar_email_recuperacao
 from pathlib import Path
-from time import sleep
 import json
+import bcrypt
 
 # Configuração da chave secreta para as sessões
 app.secret_key = 'bomdia'
-
-# Lista para armazenar usuários logados
-logged_users = []
 
 CAMINHO_USER = Path(__file__).parent / 'data' / 'users.json'
 
@@ -64,16 +61,10 @@ def login_user_route():
         password = request.form['password']
         user = login_user(username, password)
 
-        # Verifica se o usuário já está logado
-        if user and username in logged_users:
-            flash('Este usuário já está logado em outro dispositivo.', category='danger')
-            return redirect(url_for('login'))
-
         if user:
             session['username'] = username  # Define o username na sessão
             session['user_id'] = user['id_user']  # Define o id_user na sessão
             session['is_admin'] = user.get('is_admin', False)  # Define se o usuário é admin
-            logged_users.append(username)  # Adiciona o usuário à lista de logados
             return redirect('/mytasks')  # Redireciona para a página de tarefas
         else:
             flash('Nome de usuário ou senha incorretos.', category='incorreto')
@@ -83,40 +74,59 @@ def login_user_route():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    username = session.get('username')
-    if username in logged_users:
-        logged_users.remove(username)  # Remove o usuário da lista de logados
     session.pop('username', None)  # Remove o usuário da sessão
     session.pop('user_id', None)  # Remove o ID do usuário da sessão
     session.pop('is_admin', None)  # Remove a informação se o usuário é admin
     flash('Você saiu com sucesso!', category='success')
     return redirect(url_for('login'))  # Redireciona para a página de login
 
-@app.route('/forgot-password', methods=['POST', 'GET'])
+@app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email')
 
         with open(CAMINHO_USER, 'r') as arquivo:
             users = json.load(arquivo)
-
             user = next((user for user in users if user['email'] == email), None)
 
             if user:
-                try:
-                    enviar_email_recuperacao(email, nome=user.get('title', 'Usuário'))
-                    flash('E-mail de recuperação enviado com sucesso!', category='success')
-                    return redirect(url_for('login'))
-                    
-                except Exception as e:
-                    flash(f'Ocorreu um erro ao enviar o e-mail: {str(e)}', category='danger')
+                # Envia e-mail com o novo link
+                enviar_email_recuperacao(email, email)
+                flash('E-mail de recuperação enviado com sucesso!', 'success')
+                return redirect(url_for('login'))
             else:
-                flash('E-mail não encontrado. Verifique e tente novamente.', category='danger')
-
-            return redirect(url_for('forgot_password'))
+                flash('E-mail não encontrado. Verifique e tente novamente.', 'danger')
     return render_template('recovery.html')
 
-@app.route('/redefinir-senha', methods=['POST', 'GET'])
+@app.route('/redefinir-senha', methods=['GET', 'POST'])
 def redefinir_senha():
-    return render_template('resetpassword.html')
+    email = request.args.get('email')
+    codigo = request.args.get('codigo')
 
+    error_message = None
+    success_message = None
+
+    if request.method == 'POST':
+        nova_senha = request.form['nova_senha']
+        confirmar_senha = request.form['confirm_password']
+
+        if nova_senha != confirmar_senha:
+            error_message = "As senhas não coincidem."
+            return render_template('resetpassword.html', email=email, error_message=error_message)
+
+        # Atualização da nova senha
+        hashed_password = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt())
+        with open(CAMINHO_USER, 'r+') as arquivo:
+            users = json.load(arquivo)
+            for user in users:
+                if user['email'] == email:
+                    user['password'] = hashed_password.decode('utf-8')
+                    break
+            arquivo.seek(0)
+            json.dump(users, arquivo, indent=4)
+            arquivo.truncate()
+
+        success_message = "Senha redefinida com sucesso!"
+        return redirect(url_for('login'))
+
+    return render_template('resetpassword.html', email=email)

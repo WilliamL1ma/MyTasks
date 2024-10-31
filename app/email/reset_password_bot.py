@@ -1,5 +1,3 @@
-# Arquivo: recovery_email.py
-
 import os
 import pathlib
 import smtplib
@@ -7,6 +5,8 @@ from string import Template
 from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import random
+import string
 
 # Carrega as variáveis do arquivo .env
 load_dotenv()
@@ -23,8 +23,15 @@ smtp_password = os.getenv('EMAIL_PASSWORD', '')
 smtp_server = 'smtp.gmail.com'
 smtp_port = 587
 
+# Função para gerar um código aleatório
+def gerar_codigo_aleatorio(tamanho=5):
+    return ''.join(random.choices(string.digits, k=tamanho))
+
 # Função para enviar o e-mail de recuperação
-def enviar_email_recuperacao(destinatario, nome='Usuário'):
+def enviar_email_recuperacao(destinatario, email):
+    codigo_aleatorio = gerar_codigo_aleatorio()
+    link_redefinicao = f"http://localhost:5000/redefinir-senha?email={email}&codigo={codigo_aleatorio}"
+
     # Verifica se as credenciais foram carregadas corretamente
     if not smtp_user or not smtp_password:
         raise ValueError("Credenciais de e-mail não foram carregadas corretamente. Verifique o arquivo .env")
@@ -34,7 +41,7 @@ def enviar_email_recuperacao(destinatario, nome='Usuário'):
         with open(CAMINHO_HTML, 'r', encoding='utf-8') as arquivo:
             texto_arquivo = arquivo.read()
             template = Template(texto_arquivo)
-            texto_email = template.substitute(nome=nome)
+            texto_email = template.substitute(link_redefinicao=link_redefinicao)
     except FileNotFoundError:
         print("Arquivo HTML não encontrado. Verifique o caminho e o nome do arquivo.")
         return
@@ -56,8 +63,6 @@ def enviar_email_recuperacao(destinatario, nome='Usuário'):
             server.starttls()  # Inicia a comunicação criptografada
             server.login(smtp_user, smtp_password)  # Faz o login
             server.sendmail(remetente, destinatario, mime_multipart.as_string())  # Envia o e-mail
-            print('E-mail enviado com sucesso!')
-    except smtplib.SMTPAuthenticationError:
-        print("Erro de autenticação. Verifique suas credenciais e tente novamente.")
+            print(f'E-mail enviado para {destinatario}')
     except Exception as e:
-        print(f"Ocorreu um erro ao enviar o e-mail: {e}")
+        print(f"Erro ao enviar e-mail: {e}")
