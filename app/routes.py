@@ -127,6 +127,7 @@ def redefinir_senha():
             arquivo.truncate()
 
         success_message = "Senha redefinida com sucesso!"
+        flash(success_message, category='success')
         return redirect(url_for('login'))
 
     return render_template('resetpassword.html', email=email)

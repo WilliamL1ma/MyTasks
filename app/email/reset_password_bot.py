@@ -24,8 +24,9 @@ smtp_server = 'smtp.gmail.com'
 smtp_port = 587
 
 # Função para gerar um código aleatório
-def gerar_codigo_aleatorio(tamanho=5):
-    return ''.join(random.choices(string.digits, k=tamanho))
+def gerar_codigo_aleatorio(tamanho=10):
+    caracteres = string.ascii_letters + string.digits  # Letras e números
+    return ''.join(random.choices(caracteres, k=tamanho))
 
 # Função para enviar o e-mail de recuperação
 def enviar_email_recuperacao(destinatario, email):

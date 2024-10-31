@@ -56,7 +56,8 @@ def add_task(title, user_id):
         "title": title,
         "completed": False,
         "user_id": user_id,  # ID do usuário que criou a tarefa
-        "created_at": time.time()
+        "created_at": time.time(),
+        "remove_at": None
     }
     tasks.append(new_task)
 
@@ -83,12 +84,14 @@ def remove_task(task_id):
 
     if task_to_remove:
         # Adiciona a tarefa removida ao arquivo de tarefas antigas
+        task_to_remove['remove_at'] = time.time()  
         old_tasks.append(task_to_remove)
         save_old_tasks(old_tasks)
 
         # Remove a tarefa da lista original
         tasks = [task for task in tasks if task.get("id_task") != task_id]
         save_tasks(tasks)
+  
 
 def load_old_tasks(filename=OLD_TASKS):
     ensure_old_tasks_file_exists()  # Garantir que o arquivo exista
