@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
 import string
+from cryptography.fernet import Fernet
 
 # Carrega as variáveis do arquivo .env
 load_dotenv()
@@ -23,16 +24,35 @@ smtp_password = os.getenv('EMAIL_PASSWORD', '')
 smtp_server = 'smtp.gmail.com'
 smtp_port = 587
 
+# Caminho para o arquivo da chave
+key_file_path = pathlib.Path(__file__).parent.parent / 'data' / 'secret.key'
+
+# Carregar a chave para Fernet
+with open(key_file_path, 'rb') as key_file:
+    key = key_file.read()
+fernet = Fernet(key)
+
 # Função para gerar um código aleatório
 def gerar_codigo_aleatorio(tamanho=10):
     caracteres = string.ascii_letters + string.digits  # Letras e números
     return ''.join(random.choices(caracteres, k=tamanho))
 
-# Função para enviar o e-mail de recuperação
+# Função para criptografar o link de redefinição
+def criptografar_link(link):
+    return fernet.encrypt(link.encode()).decode()
+
 def enviar_email_recuperacao(destinatario, email):
     codigo_aleatorio = gerar_codigo_aleatorio()
-    link_redefinicao = f"http://localhost:5000/redefinir-senha?email={email}&codigo={codigo_aleatorio}"
+    
+    # Crie uma string com os parâmetros
+    parametros = f"email={email}&codigo={codigo_aleatorio}"
+    
+    # Criptografar apenas os parâmetros
+    parametros_criptografados = criptografar_link(parametros)
 
+    # Montar o link de redefinição
+    link_redefinicao = f"http://localhost:5000/redefinir-senha?dados={parametros_criptografados}"
+    
     # Verifica se as credenciais foram carregadas corretamente
     if not smtp_user or not smtp_password:
         raise ValueError("Credenciais de e-mail não foram carregadas corretamente. Verifique o arquivo .env")
@@ -47,7 +67,7 @@ def enviar_email_recuperacao(destinatario, email):
         print("Arquivo HTML não encontrado. Verifique o caminho e o nome do arquivo.")
         return
 
-    # Cria a estrutura do e-mail 
+    # Criação do e-mail
     mime_multipart = MIMEMultipart()
     mime_multipart['From'] = remetente
     mime_multipart['To'] = destinatario
@@ -57,7 +77,7 @@ def enviar_email_recuperacao(destinatario, email):
     corpo_email = MIMEText(texto_email, 'html', 'utf-8')
     mime_multipart.attach(corpo_email)
 
-    # Envia o e-mail usando o servidor SMTP do Gmail
+    # Envio do e-mail
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as server:
             server.ehlo()
@@ -67,3 +87,4 @@ def enviar_email_recuperacao(destinatario, email):
             print(f'E-mail enviado para {destinatario}')
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
+
