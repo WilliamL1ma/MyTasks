@@ -17,9 +17,14 @@
             {% else %}
                 <h2>Bem-vindo, {{ nome_parts[0] | title }}!</h2>
             {% endif %}
-            <form action="/logout" method="post">
-                <button class="btn btn-outline-danger">Logout</button>
-            </form>
+            <div>
+                <form action="/logout" method="post">
+                    <button class="logout">Logout</button>
+                </form>
+                <form action="/config" method="post">
+                    <button class="config">Config</button>
+                </form>
+            </div>
         </div>
         <div class="card shadow-sm mt-3">
             <div class="card-body">

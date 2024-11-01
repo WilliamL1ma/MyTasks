@@ -271,3 +271,103 @@ label {
     color: red;
     margin-top: 10px
 }
+
+button.config {
+    width: 100%;
+    padding: 6px 30px;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 4px;
+    color: grey;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 6px;
+}
+
+button.config:hover {
+    background-color: grey;
+    color: white; 
+}
+
+button.logout {
+    width: 100%;
+    padding: 6px 30px;
+    background-color: transparent;
+    border: 1px solid red;
+    border-radius: 4px;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 6px;
+}
+
+button.logout:hover {
+    background-color: red;
+    color: white; 
+}
+
+/* Adicione isso ao seu CSS existente */
+
+.password-container {
+    display: flex; /* Permite o alinhamento flexível */
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    margin-bottom: 20px; /* Espaçamento inferior, ajuste conforme necessário */
+}
+input[type="password"] {
+    flex: 1; /* O campo de senha ocupará o máximo de espaço disponível */
+    margin-right: 20px; /* Espaço entre o input e o botão */
+}
+
+
+
+.arrow-button {
+    display: inline-flex; /* Permite o alinhamento interno */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    width: 90px; /* Tamanho da seta, ajuste conforme necessário */
+    height: 38px;
+    background-color: #007bff; /* Cor de fundo */
+    border: none; /* Remove borda */
+    border-radius: 4px; /* Bordas arredondadas */
+    color: white; /* Cor do texto */
+    font-size: 16px; /* Tamanho da fonte */
+    text-decoration: none; /* Remove sublinhado */
+    cursor: pointer; /* Muda o cursor para pointer */
+}
+
+.arrow-button:hover {
+    background-color: #0056b3; /* Cor ao passar o mouse */
+}
+
+/* Estilo para mensagens de alerta */
+.alert {
+    width: calc(100% - 0.5px);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 10px 0 0 0;
+    padding: 10px; /* Adiciona um padding para melhor aparência */
+}
+
+/* Mensagem de sucesso */
+.alert-success {
+    color: #155724; /* Verde escuro */
+    background-color: #d4edda; /* Fundo verde claro para destaque */
+}
+
+/* Mensagem de erro */
+.alert-danger {
+    color: rgb(155, 0, 0); /* Vermelho escuro */
+    background-color: #f8d7da; /* Fundo vermelho claro para destaque */
+    border: 1px solid #f5c6cb; /* Borda vermelha para destacar */
+}
+
+/* Estilo para mensagens de sucesso e erro (se necessário) */
+.alert-info {
+    color: #0c5460; /* Azul escuro */
+    background-color: #d1ecf1; /* Fundo azul claro */
+    border: 1px solid #bee5eb; /* Borda azul */
+}

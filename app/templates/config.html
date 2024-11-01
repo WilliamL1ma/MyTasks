@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Configurações</h2>
+
+        <!-- Formulário para salvar informações -->
+        <form method="POST" action="{{ url_for('salvar_informacoes') }}">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" value="{{ nome }}" required>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="{{ username }}"disabled>
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" value="{{ email }}" disabled>
+
+            <!-- Formulário para verificar a senha atual -->
+            <label for="senha_atual">Senha Atual</label>
+            <div class="password-container">
+                <input type="password" id="senha_atual" name="senha_atual" placeholder="Digite sua senha atual" form="verificar-senha-form">
+                <button type="submit" class="arrow-button" form="verificar-senha-form">⭢</button>
+            </div>
+            <!-- Exibe mensagem de erro caso a senha esteja incorreta -->
+            {% if senha_incorreta %}
+                <div class="alert alert-danger">Senha atual incorreta. Tente novamente!</div>
+            {% endif %}
+
+                    <!-- Exibe mensagens flash -->
+        <div>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div>
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+
+            <button class="button_register" type="submit">Salvar</button>
+        </form>
+
+        <!-- Formulário para verificar a senha atual (separado) -->
+        <form method="POST" action="{{ url_for('verificar_senha') }}" id="verificar-senha-form"></form>
+
+        <!-- Formulário para redirecionamento para o gerenciamento de tarefas -->
+        <div class="button_register">
+            <a href="/mytasks">
+                <button type="button">⭠</button>
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>

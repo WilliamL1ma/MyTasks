@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, flash, session, url_for
+from flask import render_template, request, redirect, flash, session, url_for, jsonify
 from app import app
 from app.tasks_manager import add_task, view_tasks, remove_task, view_old_tasks
 from app.auth import register_user, login_user
@@ -18,12 +18,12 @@ CAMINHO_USER = Path(__file__).parent / 'data' / 'users.json'
 key_file_path = Path(__file__).parent.parent / 'data' / 'secret.key'
 
 # Inicializa o Fernet
-fernet = None  # Inicializa fernet como None
+fernet = None
 
 try:
     with open(key_file_path, 'rb') as key_file:
         key = key_file.read()
-        fernet = Fernet(key)  # Inicializa o Fernet com a chave
+        fernet = Fernet(key)
 except FileNotFoundError:
     print(f"Arquivo não encontrado: {key_file_path}")
 except Exception as e:
@@ -45,7 +45,7 @@ def index():
 @login_required
 def add_task_route():
     title = request.form['title']
-    user_id = session.get('user_id')  # Pega o ID do usuário logado
+    user_id = session.get('user_id')
     add_task(title, user_id)
     return redirect('/mytasks')
 
@@ -65,7 +65,8 @@ def register():
         message = register_user(username, password, email, nome)
 
         if message == 'Usuário cadastrado com sucesso!':
-            return render_template('login.html')
+            flash('Usuário cadastrado com sucesso', category='success')
+            return redirect(url_for('login'))
         else:
             return render_template('register.html', message=message)
 
@@ -80,23 +81,22 @@ def login_user_route():
 
         if user:
             session['nome'] = user['nome']
-            session['username'] = username  # Define o username na sessão
-            session['user_id'] = user['id_user']  # Define o id_user na sessão
-            session['is_admin'] = user.get('is_admin', False)  # Define se o usuário é admin
-            return redirect('/mytasks')  # Redireciona para a página de tarefas
+            session['username'] = username
+            session['user_id'] = user['id_user']
+            session['email'] = user['email']
+            session['is_admin'] = user.get('is_admin', False)
+            return redirect('/mytasks')
         else:
-            flash('Nome de usuário ou senha incorretos.', category='incorreto')
+            flash('Nome de usuário ou senha incorretos.', category='danger')
             return redirect(url_for('login'))
 
     return render_template('login.html')  # Retorna a página de login
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('username', None)  # Remove o usuário da sessão
-    session.pop('user_id', None)  # Remove o ID do usuário da sessão
-    session.pop('is_admin', None)  # Remove a informação se o usuário é admin
+    session.clear()  # Remove todas as informações da sessão
     flash('Você saiu com sucesso!', category='success')
-    return redirect(url_for('login'))  # Redireciona para a página de login
+    return redirect(url_for('login'))
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -124,17 +124,13 @@ def redefinir_senha():
     email = None  # Inicializa a variável email
 
     if dados_criptografados and fernet:  # Verifica se o Fernet foi inicializado
-        # Descriptografar os dados
         try:
             dados_descriptografados = fernet.decrypt(dados_criptografados.encode())
-            # Aqui você precisa garantir que o email e o código estejam em formato adequado
-            dados = dados_descriptografados.decode()  # Decodificando os dados descriptografados
-            # Supondo que o email e o código sejam passados em formato "email&codigo"
+            dados = dados_descriptografados.decode()
             for param in dados.split('&'):
                 chave, valor = param.split('=')
                 if chave == 'email':
                     email = valor
-                # Adicione qualquer outro parâmetro que você esteja passando
 
         except Exception as e:
             error_message = "Link inválido ou expirado."
@@ -166,3 +162,89 @@ def redefinir_senha():
         return redirect(url_for('login'))
 
     return render_template('resetpassword.html', email=email, error_message=error_message)
+
+@app.route('/config', methods=['GET', 'POST'])
+@login_required
+def config():
+    username = session['username']
+    nome = session['nome']
+    email = session['email']
+    senha_incorreta = False  # Variável de controle para senha incorreta
+
+    if request.method == 'POST' and 'verificar_senha' in request.form:
+        senha_atual = request.form.get('senha_atual')
+
+        # Validação da senha atual
+        with open(CAMINHO_USER, 'r') as arquivo:
+            users = json.load(arquivo)
+            user = next((u for u in users if u['id_user'] == session['user_id']), None)
+
+            if user and bcrypt.checkpw(senha_atual.encode('utf-8'), user['password'].encode('utf-8')):
+                return redirect(url_for('trocar_senha'))
+            else:
+                senha_incorreta = True
+
+    return render_template('config.html', username=username, nome=nome, email=email, senha_incorreta=senha_incorreta)
+
+@app.route('/salvar-informacoes', methods=['POST'])
+@login_required
+def salvar_informacoes():
+    novo_nome = request.form.get('nome')
+
+    # Atualiza o nome no arquivo JSON e na sessão
+    with open(CAMINHO_USER, 'r+') as arquivo:
+        users = json.load(arquivo)
+        for user in users:
+            if user['id_user'] == session['user_id']:
+                user['nome'] = novo_nome
+                break
+        arquivo.seek(0)
+        json.dump(users, arquivo, indent=4)
+        arquivo.truncate()
+
+    session['nome'] = novo_nome
+    flash("Informações atualizadas com sucesso!", category='success')
+    return redirect(url_for('config'))
+
+@app.route('/verificar-senha', methods=['POST'])
+@login_required
+def verificar_senha():
+    senha_atual = request.form['senha_atual']
+    user_id = session['user_id']
+
+    with open(CAMINHO_USER, 'r') as arquivo:
+        users = json.load(arquivo)
+        user = next((u for u in users if u['id_user'] == user_id), None)
+
+        if user and bcrypt.checkpw(senha_atual.encode('utf-8'), user['password'].encode('utf-8')):
+            return redirect(url_for('trocar_senha'))
+        else:
+            flash('Senha atual incorreta. Tente novamente!', category='danger')
+            return redirect(url_for('config'))
+
+@app.route('/trocar-senha', methods=['GET', 'POST'])
+@login_required
+def trocar_senha():
+    if request.method == 'POST':
+        nova_senha = request.form['nova_senha']
+        confirmar_senha = request.form['confirmar_senha']
+
+        # Validação das senhas
+        if nova_senha != confirmar_senha:
+            flash("As senhas não coincidem.", category='danger')
+        else:
+            hashed_password = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt())
+            with open(CAMINHO_USER, 'r+') as arquivo:
+                users = json.load(arquivo)
+                for user in users:
+                    if user['id_user'] == session['user_id']:
+                        user['password'] = hashed_password.decode('utf-8')
+                        break
+                arquivo.seek(0)
+                json.dump(users, arquivo, indent=4)
+                arquivo.truncate()
+
+            flash("Senha alterada com sucesso!", category='success')
+            return redirect(url_for('config'))
+
+    return render_template('trocar_senha.html')

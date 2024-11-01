@@ -5,7 +5,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'username' not in session:  # Verifica se o usuário está logado
-            flash('Você precisa estar logado para acessar essa página.')
+            flash('Você precisa estar logado para acessar essa página.', category='danger')
             return redirect(url_for('login'))  # Redireciona para a página de login
         return f(*args, **kwargs)
     return decorated_function
