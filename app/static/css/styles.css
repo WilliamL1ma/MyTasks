@@ -56,7 +56,8 @@ label {
 /* Estilo para campos de entrada */
 input[type="text"], 
 input[type="password"],
-input[type="email"] { /* Adiciona o campo de e-mail aqui */
+input[type="email"],
+input[type="nome"] { /* Adiciona o campo de e-mail aqui */
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ccc;
@@ -264,4 +265,9 @@ label {
 
 .Tocantins {
     margin-top: 15px;
+}
+
+.pitagoras {
+    color: red;
+    margin-top: 10px
 }

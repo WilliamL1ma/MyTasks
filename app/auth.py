@@ -17,7 +17,7 @@ def get_next_id(users):
     else:
         return max(user.get('id_user', 0) for user in users) + 1  # Usando 'id_user'
 
-def register_user(username, password, email, is_admin=False):
+def register_user(username, password, email, nome, is_admin=False):
     ensure_users_file_exists()  # Garantir que o arquivo exista
 
     with open(CAMINHO_USER, 'r') as file:
@@ -26,12 +26,20 @@ def register_user(username, password, email, is_admin=False):
     # Verifica se o usuário já existe
     for user in users:
         if user['title'] == username:
-            return 'Usuário já existe'
+            return 'Usuário já cadastrado'
         
+        elif user['email'] == email:
+            return 'Email já cadastrado'
+        
+        elif user['title'] == username and user['email'] == email:
+            return 'Usuário e Email já cadastrados'
+        
+    
     password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     new_user = {
-        'id_user': get_next_id(users),  # Obtém o próximo ID disponível
+        'id_user': get_next_id(users),
+        'nome': nome,  # Obtém o próximo ID disponível
         'title': username,
         'password': password_hash.decode('utf-8'),
         'email': email,

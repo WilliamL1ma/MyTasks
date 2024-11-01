@@ -11,7 +11,12 @@
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Bem-vindo, {{ session['username'] | title }}!</h2>
+            {% set nome_parts = session['nome'].split() %}
+            {% if nome_parts[0] != nome_parts[-1] %}
+                <h2>Bem-vindo, {{ nome_parts[0] | title }} {{ nome_parts[-1] | title }}!</h2>
+            {% else %}
+                <h2>Bem-vindo, {{ nome_parts[0] | title }}!</h2>
+            {% endif %}
             <form action="/logout" method="post">
                 <button class="btn btn-outline-danger">Logout</button>
             </form>

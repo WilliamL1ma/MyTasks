@@ -87,4 +87,3 @@ def enviar_email_recuperacao(destinatario, email):
             print(f'E-mail enviado para {destinatario}')
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
-

@@ -58,10 +58,11 @@ def remove_task_route(task_id):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        nome = request.form['nome']
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        message = register_user(username, password, email)
+        message = register_user(username, password, email, nome)
 
         if message == 'Usuário cadastrado com sucesso!':
             return render_template('login.html')
@@ -78,6 +79,7 @@ def login_user_route():
         user = login_user(username, password)
 
         if user:
+            session['nome'] = user['nome']
             session['username'] = username  # Define o username na sessão
             session['user_id'] = user['id_user']  # Define o id_user na sessão
             session['is_admin'] = user.get('is_admin', False)  # Define se o usuário é admin
