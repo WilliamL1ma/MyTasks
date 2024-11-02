@@ -371,3 +371,21 @@ input[type="password"] {
     background-color: #d1ecf1; /* Fundo azul claro */
     border: 1px solid #bee5eb; /* Borda azul */
 }
+
+button.adm {
+    width: 100%;
+    padding: 6px 30px;
+    background-color: transparent;
+    border: 1px solid orange;
+    border-radius: 4px;
+    color: orange;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 6px;
+}
+
+button.adm:hover {
+    background-color: orange;
+    color: white; 
+}

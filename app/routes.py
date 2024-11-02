@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, session, url_for, j
 from app import app
 from app.tasks_manager import add_task, view_tasks, remove_task, view_old_tasks
 from app.auth import register_user, login_user
-from app.decorators import login_required
+from app.decorators import login_required, admin_required
 from app.email.reset_password_bot import enviar_email_recuperacao
 from pathlib import Path
 import json
@@ -85,12 +85,19 @@ def login_user_route():
             session['user_id'] = user['id_user']
             session['email'] = user['email']
             session['is_admin'] = user.get('is_admin', False)
-            return redirect('/mytasks')
+
+            # Redireciona para a página de administração se for um admin
+            if session['is_admin']:
+                return redirect(url_for('admin_dashboard'))  # Ajuste para a rota correta da admin
+
+            return redirect('/mytasks')  # Se não for admin, redireciona para a página de tarefas
         else:
             flash('Nome de usuário ou senha incorretos.', category='danger')
             return redirect(url_for('login'))
 
     return render_template('login.html')  # Retorna a página de login
+
+
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -248,3 +255,18 @@ def trocar_senha():
             return redirect(url_for('config'))
 
     return render_template('trocar_senha.html')
+
+@app.route('/admin')
+@login_required
+@admin_required
+def admin_dashboard():
+    # Lógica para renderizar a página de administração
+    return render_template('admin.html')
+
+@app.route('/admin-gerenciamento', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_gerenciamento():
+    if request.method == 'POST':
+        pass
+    return render_template('admin-gerenciamento.html')
